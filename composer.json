@@ -1,6 +1,7 @@
 {
     "require": {
-        "phpoffice/phpspreadsheet": "^1.19"
+        "phpoffice/phpspreadsheet": "^1.19",
+        "cocur/slugify": "^4.0"
     },
     "require-dev": {
         "kint-php/kint": "^3.3"

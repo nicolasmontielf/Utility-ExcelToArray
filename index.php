@@ -1,23 +1,28 @@
 <?php
 require 'vendor/autoload.php';
+$slugify = new \Cocur\Slugify\Slugify();
 
 // Todo para mostrar en el shell
 $directorio = "./excel";
 $directorioEscaneado = scandir($directorio);
-$directorioFiltrado = array_filter($directorioEscaneado, function ($val) {
-    if (!is_dir($val)) {
-        return $val;
-    }
-});
+$directorioFiltrado = array_values(
+    array_filter($directorioEscaneado, function ($val) {
+        if (!is_dir($val) && $val != ".gitignore") {
+            return $val;
+        }
+    })
+);
 
 echo "Actuales archivos excel: " . PHP_EOL;
-foreach ($directorioFiltrado as $filtrado) {
-    echo "- {$filtrado}" . PHP_EOL;
+foreach ($directorioFiltrado as $index => $filtrado) {
+    $num = $index + 1;
+    echo "{$num}- {$filtrado}" . PHP_EOL;
 }
 
-$archivo = readline("Seleccione un archivo: ");
+$input = readline("Seleccione un archivo: ");
 echo PHP_EOL . "Se está procesando el excel" . PHP_EOL;
 
+$archivo = (explode(".", $directorioFiltrado[($input-1)]))[0];
 
 // Toda la parte de creación de excel
 try {
@@ -66,7 +71,8 @@ try {
     }
 
     // Guardamos en un text
-    $txt = fopen("./result/{$archivo}.txt", "w");
+    $nombreTxt = $slugify->slugify($archivo);
+    $txt = fopen("./result/{$nombreTxt}.txt", "w");
     fwrite($txt, $texto);
 
     echo "Se ha finalizado el proceso..." . PHP_EOL;
